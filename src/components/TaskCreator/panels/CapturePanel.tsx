@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowUp, MousePointer2, Eye, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowUp, MousePointer2, Trash2 } from 'lucide-react';
 import { useTask } from '../../../context/TaskContext';
 import './CapturePanel.css';
 

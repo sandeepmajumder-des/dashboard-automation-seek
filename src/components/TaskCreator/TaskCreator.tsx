@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Globe, ChevronLeft, ChevronRight as ChevronRightIcon, RotateCw, MoreVertical, Maximize2, Minimize2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { useTask } from '../../context/TaskContext';
 import { TabType } from '../../types';
 import CapturePanel, { CapturedStep } from './panels/CapturePanel';
@@ -27,7 +26,6 @@ interface ClickMarker {
 }
 
 export default function TaskCreator() {
-  const navigate = useNavigate();
   const { activeTab, setActiveTab, currentTask, saveDraft, deployTask } = useTask();
   const [isExpanded, setIsExpanded] = useState(false);
   const [capturedSteps, setCapturedSteps] = useState<CapturedStep[]>([]);
@@ -134,7 +132,7 @@ export default function TaskCreator() {
   const renderBrowserContent = (wrapperRef: React.RefObject<HTMLDivElement | null>) => (
     <div className="browser-content">
       {showDummyAriba ? (
-        <div className="ariba-wrapper" ref={wrapperRef}>
+        <div className="ariba-wrapper" ref={wrapperRef as React.RefObject<HTMLDivElement>}>
           <DummyAriba onElementClick={(info) => handleElementClick(info, wrapperRef.current)} />
           {clickMarkers.map(marker => (
             <div

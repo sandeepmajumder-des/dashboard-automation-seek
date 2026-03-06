@@ -1,15 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import { useTask } from '../../../context/TaskContext';
 import { TaskStep } from '../../../types';
-
-const stepTypes = [
-  { value: 'click', label: 'Click' },
-  { value: 'input', label: 'Input' },
-  { value: 'navigate', label: 'Navigate' },
-  { value: 'wait', label: 'Wait' },
-  { value: 'custom', label: 'Custom' },
-];
 
 export default function DefinePanel() {
   const { currentTask, updateTask } = useTask();

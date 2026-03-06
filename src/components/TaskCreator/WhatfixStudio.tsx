@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   X, 
   Sparkles, 
@@ -9,7 +9,6 @@ import {
   ChevronRight,
   Zap,
   Eye,
-  PenTool,
   MessageSquare,
   HelpCircle,
   Layers

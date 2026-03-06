@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Search, 
@@ -8,7 +8,6 @@ import {
   ArrowUpDown,
   TrendingUp,
   TrendingDown,
-  AlertTriangle,
   CheckCircle2,
   XCircle,
   Clock,
@@ -105,7 +104,6 @@ const liveEvals: AutomationEval[] = [
 export default function EvalsLive() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
 
   const overallStats = {
     totalDataPoints: liveEvals.reduce((sum, e) => sum + e.dataPoints, 0),

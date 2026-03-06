@@ -9,13 +9,10 @@ import {
   Bell,
   ChevronDown,
   ChevronRight,
-  ChevronLeft,
-  Grid3X3,
   FlaskConical,
   Database,
   TestTube2,
   PanelLeftClose,
-  PanelLeft,
 } from 'lucide-react';
 import './Sidebar.css';
 

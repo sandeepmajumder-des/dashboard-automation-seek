@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   Search, 
   Plus,
   Shield,
-  AlertTriangle,
   CheckCircle2,
   Clock,
   Users,
   FileText,
   Lock,
   Eye,
-  Settings,
   MoreVertical,
   ToggleLeft,
   ToggleRight

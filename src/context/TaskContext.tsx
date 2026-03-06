@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Task, TabType, TriggerConfig, GuardrailConfig, TaskStep } from '../types';
+import { createContext, useContext, useState, ReactNode } from 'react';
+import { Task, TabType } from '../types';
 
 interface TaskContextType {
   tasks: Task[];

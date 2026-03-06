@@ -27,9 +27,6 @@ interface DummyAribaProps {
 export default function DummyAriba({ onElementClick }: DummyAribaProps) {
   const handleClick = (e: React.MouseEvent, elementName: string, elementType: string) => {
     e.stopPropagation();
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left + rect.width / 2;
-    const y = e.clientY - rect.top + rect.height / 2;
     
     onElementClick({
       elementName,

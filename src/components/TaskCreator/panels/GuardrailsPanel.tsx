@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTask } from '../../../context/TaskContext';
 import { GuardrailConfig } from '../../../types';
 
