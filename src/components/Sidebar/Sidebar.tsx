@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -13,7 +13,9 @@ import {
   Database,
   TestTube2,
   PanelLeftClose,
+  Check,
 } from 'lucide-react';
+import { useAccount } from '../../context/AccountContext';
 import './Sidebar.css';
 
 interface NavItem {
@@ -52,6 +54,25 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const [expandedItems, setExpandedItems] = useState<string[]>(['evals']);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
+  const { currentAccount, accounts, switchAccount } = useAccount();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsAccountDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleAccountSwitch = (accountId: string) => {
+    switchAccount(accountId);
+    setIsAccountDropdownOpen(false);
+  };
 
   const toggleCollapse = () => {
     setIsCollapsed(prev => !prev);
@@ -106,15 +127,48 @@ export default function Sidebar() {
         )}
       </div>
 
-      <div className="user-section" title={isCollapsed ? 'Sandeep_m' : undefined}>
-        <div className="user-avatar">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sandeep" alt="User" />
+      <div className="user-section-wrapper" ref={dropdownRef}>
+        <div 
+          className="user-section" 
+          title={isCollapsed ? currentAccount.name : undefined}
+          onClick={() => !isCollapsed && setIsAccountDropdownOpen(!isAccountDropdownOpen)}
+        >
+          <div className="user-avatar">
+            <img src={currentAccount.avatar} alt="User" />
+          </div>
+          {!isCollapsed && (
+            <>
+              <span className="user-name">{currentAccount.name}</span>
+              <ChevronDown 
+                size={16} 
+                className={`user-chevron ${isAccountDropdownOpen ? 'rotated' : ''}`} 
+              />
+            </>
+          )}
         </div>
-        {!isCollapsed && (
-          <>
-            <span className="user-name">Sandeep_m</span>
-            <ChevronDown size={16} className="user-chevron" />
-          </>
+        
+        {!isCollapsed && isAccountDropdownOpen && (
+          <div className="account-dropdown">
+            <div className="dropdown-header">Switch Account</div>
+            {accounts.map(account => (
+              <div 
+                key={account.id}
+                className={`account-option ${account.id === currentAccount.id ? 'active' : ''}`}
+                onClick={() => handleAccountSwitch(account.id)}
+              >
+                <div className="account-option-avatar">
+                  <img src={account.avatar} alt={account.name} />
+                </div>
+                <div className="account-option-info">
+                  <span className="account-option-name">{account.name}</span>
+                  <span className="account-option-stats">{account.automationsCount} automations</span>
+                </div>
+                {account.id === currentAccount.id && (
+                  <Check size={16} className="account-check" />
+                )}
+              </div>
+            ))}
+          </div>
         )}
       </div>
 
@@ -162,11 +216,11 @@ export default function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
-        <div className="footer-user" title={isCollapsed ? 'Sandeep Majumder' : undefined}>
+        <div className="footer-user" title={isCollapsed ? currentAccount.displayName : undefined}>
           <div className="footer-avatar">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sandeep" alt="User" />
+            <img src={currentAccount.avatar} alt="User" />
           </div>
-          {!isCollapsed && <span className="footer-user-name">Sandeep Majumder</span>}
+          {!isCollapsed && <span className="footer-user-name">{currentAccount.displayName}</span>}
         </div>
 
         <ul className="nav-list">

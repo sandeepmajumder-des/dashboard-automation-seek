@@ -1,6 +1,7 @@
 import { } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { TaskProvider } from './context/TaskContext';
+import { AccountProvider } from './context/AccountContext';
 import Sidebar from './components/Sidebar/Sidebar';
 import Overview from './pages/Overview';
 import AutomationDetail from './pages/AutomationDetail';
@@ -13,6 +14,7 @@ import EvalsTest from './pages/EvalsTest';
 
 function App() {
   return (
+    <AccountProvider>
     <TaskProvider>
       <div className="app-container">
         <Sidebar />
@@ -36,6 +38,7 @@ function App() {
         </main>
       </div>
     </TaskProvider>
+    </AccountProvider>
   );
 }
 

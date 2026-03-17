@@ -10,6 +10,7 @@ import {
   ArrowUpDown,
   Eye
 } from 'lucide-react';
+import { useAccount } from '../context/AccountContext';
 import './Overview.css';
 
 interface Automation {
@@ -25,98 +26,203 @@ interface Automation {
   successRate: number;
 }
 
-const sampleAutomations: Automation[] = [
-  {
-    id: '1',
-    name: 'New Employee Onboarding',
-    description: 'Automates the onboarding process for new employees over a period o...',
-    status: 'Active',
-    automationType: 'Onboarding',
-    trigger: 'Email, Schedule',
-    members: ['K', 'R'],
-    lastRun: 'Mar 03, 2026',
-    totalRuns: 30,
-    successRate: 93,
-  },
-  {
-    id: '2',
-    name: 'Purchase requisition',
-    description: 'Process all purchase requisition from power dynamics automatically',
-    status: 'Active',
-    automationType: 'Vendor purchase processing',
-    trigger: 'Email, ticket',
-    members: ['T', 'M'],
-    lastRun: 'Mar 02, 2026',
-    totalRuns: 45,
-    successRate: 89,
-  },
-  {
-    id: '3',
-    name: 'IT Ticket Triage',
-    description: 'Automatically categorizes and routes incoming success tickets',
-    status: 'Paused',
-    automationType: 'IT helpdesk',
-    trigger: 'Ticket',
-    members: ['S', 'A', 'R'],
-    lastRun: 'Feb 27, 2026',
-    totalRuns: 120,
-    successRate: 96,
-  },
-  {
-    id: '4',
-    name: 'Customer refund',
-    description: 'Automatically processes customer refund requests from raised tickets',
-    status: 'Error',
-    automationType: 'Refund processing',
-    trigger: 'Email,Ticket',
-    members: ['S', 'R'],
-    lastRun: 'Feb 24, 2026',
-    totalRuns: 28,
-    successRate: 71,
-  },
-  {
-    id: '5',
-    name: 'Weekly Sales Report',
-    description: 'Generates and distributes weekly sales performance report',
-    status: 'Draft',
-    automationType: '--',
-    trigger: '--',
-    members: ['A'],
-    lastRun: '--',
-    totalRuns: 0,
-    successRate: 0,
-  },
-  {
-    id: '6',
-    name: 'Invoice Processing',
-    description: 'Processes incoming invoices and routes for business units',
-    status: 'Active',
-    automationType: 'Invoice processing',
-    trigger: 'Email',
-    members: ['S', 'A', 'R'],
-    lastRun: 'Feb 23, 2026',
-    totalRuns: 85,
-    successRate: 94,
-  },
-];
+const automationsByAccount: Record<string, Automation[]> = {
+  sandeep: [
+    {
+      id: '1',
+      name: 'New Employee Onboarding',
+      description: 'Automates the onboarding process for new employees over a period o...',
+      status: 'Active',
+      automationType: 'Onboarding',
+      trigger: 'Email, Schedule',
+      members: ['K', 'R'],
+      lastRun: 'Mar 03, 2026',
+      totalRuns: 30,
+      successRate: 93,
+    },
+    {
+      id: '2',
+      name: 'Purchase requisition',
+      description: 'Process all purchase requisition from power dynamics automatically',
+      status: 'Active',
+      automationType: 'Vendor purchase processing',
+      trigger: 'Email, ticket',
+      members: ['T', 'M'],
+      lastRun: 'Mar 02, 2026',
+      totalRuns: 45,
+      successRate: 89,
+    },
+    {
+      id: '3',
+      name: 'IT Ticket Triage',
+      description: 'Automatically categorizes and routes incoming success tickets',
+      status: 'Paused',
+      automationType: 'IT helpdesk',
+      trigger: 'Ticket',
+      members: ['S', 'A', 'R'],
+      lastRun: 'Feb 27, 2026',
+      totalRuns: 120,
+      successRate: 96,
+    },
+    {
+      id: '4',
+      name: 'Customer refund',
+      description: 'Automatically processes customer refund requests from raised tickets',
+      status: 'Error',
+      automationType: 'Refund processing',
+      trigger: 'Email,Ticket',
+      members: ['S', 'R'],
+      lastRun: 'Feb 24, 2026',
+      totalRuns: 28,
+      successRate: 71,
+    },
+    {
+      id: '5',
+      name: 'Weekly Sales Report',
+      description: 'Generates and distributes weekly sales performance report',
+      status: 'Draft',
+      automationType: '--',
+      trigger: '--',
+      members: ['A'],
+      lastRun: '--',
+      totalRuns: 0,
+      successRate: 0,
+    },
+    {
+      id: '6',
+      name: 'Invoice Processing',
+      description: 'Processes incoming invoices and routes for business units',
+      status: 'Active',
+      automationType: 'Invoice processing',
+      trigger: 'Email',
+      members: ['S', 'A', 'R'],
+      lastRun: 'Feb 23, 2026',
+      totalRuns: 85,
+      successRate: 94,
+    },
+  ],
+  ravi: [
+    {
+      id: 'r1',
+      name: 'Vendor Onboarding',
+      description: 'Automates vendor registration and approval workflow',
+      status: 'Active',
+      automationType: 'Vendor Management',
+      trigger: 'Form, Email',
+      members: ['R', 'P'],
+      lastRun: 'Mar 05, 2026',
+      totalRuns: 67,
+      successRate: 91,
+    },
+    {
+      id: 'r2',
+      name: 'Contract Renewal Alerts',
+      description: 'Sends automated reminders for upcoming contract renewals',
+      status: 'Active',
+      automationType: 'Contract Management',
+      trigger: 'Schedule',
+      members: ['R', 'K'],
+      lastRun: 'Mar 04, 2026',
+      totalRuns: 23,
+      successRate: 100,
+    },
+    {
+      id: 'r3',
+      name: 'Expense Report Processing',
+      description: 'Processes and validates employee expense reports',
+      status: 'Paused',
+      automationType: 'Finance',
+      trigger: 'Email, Form',
+      members: ['R', 'S'],
+      lastRun: 'Feb 28, 2026',
+      totalRuns: 156,
+      successRate: 88,
+    },
+    {
+      id: 'r4',
+      name: 'Leave Request Approval',
+      description: 'Automates leave request routing and approval',
+      status: 'Active',
+      automationType: 'HR',
+      trigger: 'Form',
+      members: ['R'],
+      lastRun: 'Mar 06, 2026',
+      totalRuns: 89,
+      successRate: 97,
+    },
+  ],
+  sarthak: [
+    {
+      id: 's1',
+      name: 'Customer Feedback Analysis',
+      description: 'Analyzes customer feedback and generates sentiment reports',
+      status: 'Active',
+      automationType: 'Analytics',
+      trigger: 'Schedule, API',
+      members: ['S', 'M'],
+      lastRun: 'Mar 06, 2026',
+      totalRuns: 45,
+      successRate: 98,
+    },
+    {
+      id: 's2',
+      name: 'Social Media Monitoring',
+      description: 'Monitors brand mentions across social platforms',
+      status: 'Active',
+      automationType: 'Marketing',
+      trigger: 'Schedule',
+      members: ['S', 'A'],
+      lastRun: 'Mar 06, 2026',
+      totalRuns: 210,
+      successRate: 99,
+    },
+    {
+      id: 's3',
+      name: 'Lead Scoring Automation',
+      description: 'Automatically scores and prioritizes sales leads',
+      status: 'Active',
+      automationType: 'Sales',
+      trigger: 'API, Form',
+      members: ['S', 'R', 'K'],
+      lastRun: 'Mar 05, 2026',
+      totalRuns: 178,
+      successRate: 94,
+    },
+    {
+      id: 's4',
+      name: 'Email Campaign Scheduler',
+      description: 'Schedules and sends targeted email campaigns',
+      status: 'Draft',
+      automationType: 'Marketing',
+      trigger: '--',
+      members: ['S'],
+      lastRun: '--',
+      totalRuns: 0,
+      successRate: 0,
+    },
+  ],
+};
+
+const statsByAccount: Record<string, { total: number; active: number; paused: number; errors: number }> = {
+  sandeep: { total: 16, active: 10, paused: 4, errors: 2 },
+  ravi: { total: 12, active: 8, paused: 3, errors: 1 },
+  sarthak: { total: 8, active: 6, paused: 1, errors: 1 },
+};
 
 export default function Overview() {
   const navigate = useNavigate();
+  const { currentAccount } = useAccount();
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(2);
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
 
-  const totalPages = 5;
-  const totalRows = 30;
+  const automations = automationsByAccount[currentAccount.id] || [];
+  const stats = statsByAccount[currentAccount.id] || { total: 0, active: 0, paused: 0, errors: 0 };
+  
+  const totalPages = Math.ceil(automations.length / 6) || 1;
+  const totalRows = automations.length;
   const rowsPerPage = 6;
-
-  const stats = {
-    total: 30,
-    active: 16,
-    paused: 8,
-    errors: 6,
-  };
 
   const getStatusClass = (status: string) => {
     switch (status) {
@@ -135,10 +241,10 @@ export default function Overview() {
   };
 
   const toggleAllRows = () => {
-    if (selectedRows.length === sampleAutomations.length) {
+    if (selectedRows.length === automations.length) {
       setSelectedRows([]);
     } else {
-      setSelectedRows(sampleAutomations.map(a => a.id));
+      setSelectedRows(automations.map(a => a.id));
     }
   };
 
@@ -217,7 +323,7 @@ export default function Overview() {
               <th className="checkbox-col">
                 <input 
                   type="checkbox" 
-                  checked={selectedRows.length === sampleAutomations.length}
+                  checked={selectedRows.length === automations.length && automations.length > 0}
                   onChange={toggleAllRows}
                 />
               </th>
@@ -244,7 +350,7 @@ export default function Overview() {
             </tr>
           </thead>
           <tbody>
-            {sampleAutomations.map(automation => (
+            {automations.map(automation => (
               <tr 
                 key={automation.id} 
                 className={selectedRows.includes(automation.id) ? 'selected' : ''}
