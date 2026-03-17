@@ -8,7 +8,6 @@ import {
   CheckCircle2,
   XCircle,
   BarChart3,
-  PieChart,
   Activity
 } from 'lucide-react';
 import './SeekAnalytics.css';
@@ -23,6 +22,35 @@ interface AnalyticsData {
   trend: 'up' | 'down' | 'stable';
   status: 'healthy' | 'warning' | 'critical';
 }
+
+interface ExecutionTrendData {
+  day: string;
+  success: number;
+  failed: number;
+}
+
+interface DistributionData {
+  label: string;
+  value: number;
+  color: string;
+}
+
+const executionTrends: ExecutionTrendData[] = [
+  { day: 'Mon', success: 145, failed: 12 },
+  { day: 'Tue', success: 178, failed: 8 },
+  { day: 'Wed', success: 156, failed: 15 },
+  { day: 'Thu', success: 189, failed: 6 },
+  { day: 'Fri', success: 201, failed: 9 },
+  { day: 'Sat', success: 87, failed: 4 },
+  { day: 'Sun', success: 62, failed: 3 },
+];
+
+const successDistribution: DistributionData[] = [
+  { label: 'Successful', value: 1118, color: '#22c55e' },
+  { label: 'Failed', value: 57, color: '#ef4444' },
+  { label: 'Partial', value: 42, color: '#f59e0b' },
+  { label: 'Cancelled', value: 30, color: '#94a3b8' },
+];
 
 const sampleAnalytics: AnalyticsData[] = [
   {
@@ -177,9 +205,42 @@ export default function SeekAnalytics() {
               <span className="legend-item"><span className="dot failed"></span> Failed</span>
             </div>
           </div>
-          <div className="chart-placeholder">
-            <BarChart3 size={48} />
-            <p>Execution trend chart</p>
+          <div className="bar-chart-container">
+            <div className="bar-chart-y-axis">
+              <span>200</span>
+              <span>150</span>
+              <span>100</span>
+              <span>50</span>
+              <span>0</span>
+            </div>
+            <div className="bar-chart">
+              {executionTrends.map((data, index) => {
+                const maxValue = 220;
+                const successHeight = (data.success / maxValue) * 100;
+                const failedHeight = (data.failed / maxValue) * 100;
+                return (
+                  <div key={index} className="bar-group">
+                    <div className="bars">
+                      <div 
+                        className="bar success-bar" 
+                        style={{ height: `${successHeight}%` }}
+                        title={`Success: ${data.success}`}
+                      >
+                        <span className="bar-tooltip">{data.success}</span>
+                      </div>
+                      <div 
+                        className="bar failed-bar" 
+                        style={{ height: `${failedHeight}%` }}
+                        title={`Failed: ${data.failed}`}
+                      >
+                        <span className="bar-tooltip">{data.failed}</span>
+                      </div>
+                    </div>
+                    <span className="bar-label">{data.day}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 
@@ -187,9 +248,56 @@ export default function SeekAnalytics() {
           <div className="card-header">
             <h3>Success Distribution</h3>
           </div>
-          <div className="chart-placeholder">
-            <PieChart size={48} />
-            <p>Success rate breakdown</p>
+          <div className="donut-chart-container">
+            <div className="donut-chart">
+              <svg viewBox="0 0 100 100" className="donut-svg">
+                {(() => {
+                  const total = successDistribution.reduce((sum, item) => sum + item.value, 0);
+                  let cumulativePercent = 0;
+                  
+                  return successDistribution.map((item, index) => {
+                    const percent = (item.value / total) * 100;
+                    const strokeDasharray = `${percent} ${100 - percent}`;
+                    const strokeDashoffset = -cumulativePercent;
+                    cumulativePercent += percent;
+                    
+                    return (
+                      <circle
+                        key={index}
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        fill="none"
+                        stroke={item.color}
+                        strokeWidth="12"
+                        strokeDasharray={strokeDasharray}
+                        strokeDashoffset={strokeDashoffset}
+                        className="donut-segment"
+                        style={{ transformOrigin: 'center' }}
+                      />
+                    );
+                  });
+                })()}
+              </svg>
+              <div className="donut-center">
+                <span className="donut-total">{successDistribution.reduce((sum, item) => sum + item.value, 0).toLocaleString()}</span>
+                <span className="donut-label">Total</span>
+              </div>
+            </div>
+            <div className="donut-legend">
+              {successDistribution.map((item, index) => {
+                const total = successDistribution.reduce((sum, i) => sum + i.value, 0);
+                const percent = ((item.value / total) * 100).toFixed(1);
+                return (
+                  <div key={index} className="donut-legend-item">
+                    <span className="donut-legend-color" style={{ backgroundColor: item.color }}></span>
+                    <span className="donut-legend-label">{item.label}</span>
+                    <span className="donut-legend-value">{item.value}</span>
+                    <span className="donut-legend-percent">{percent}%</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
