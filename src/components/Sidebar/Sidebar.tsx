@@ -216,13 +216,6 @@ export default function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
-        <div className="footer-user" title={isCollapsed ? currentAccount.displayName : undefined}>
-          <div className="footer-avatar">
-            <img src={currentAccount.avatar} alt="User" />
-          </div>
-          {!isCollapsed && <span className="footer-user-name">{currentAccount.displayName}</span>}
-        </div>
-
         <ul className="nav-list">
           {bottomNavItems.map(item => (
             <li key={item.id}>
