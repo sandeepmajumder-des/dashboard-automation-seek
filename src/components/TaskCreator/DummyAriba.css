@@ -437,6 +437,11 @@
   color: #2e7d32;
 }
 
+.status-badge.draft {
+  background: #e0e0e0;
+  color: #616161;
+}
+
 .action-btn {
   padding: 6px 14px;
   background: #0a6ed1;

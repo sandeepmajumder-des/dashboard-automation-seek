@@ -175,6 +175,19 @@ const automationData: Record<string, AutomationInfo> = {
     successRate: 94,
     avgDuration: '2m 50s',
   },
+  '7': {
+    id: '7',
+    name: 'Proflow purchase request',
+    description: 'Automates purchase request workflow for Proflow system. This automation handles the end-to-end process of creating, submitting, and tracking purchase requisitions in the SAP Ariba procurement platform.',
+    status: 'Draft',
+    automationType: 'Purchase Requisition',
+    trigger: 'Manual, Email',
+    createdAt: 'Mar 19, 2026',
+    lastModified: 'Mar 19, 2026',
+    totalRuns: 0,
+    successRate: 0,
+    avgDuration: '--',
+  },
 };
 
 const generateLogs = (runId: string, status: string, startTime: Date, errorMessage?: string): LogEntry[] => {
@@ -811,6 +824,11 @@ export default function AutomationDetail() {
                 <Play size={18} />
                 Resume
               </button>
+            ) : automation.status === 'Draft' ? (
+              <button className="action-btn primary">
+                <Play size={18} />
+                Activate
+              </button>
             ) : null}
             <button className="action-btn">
               <MoreVertical size={18} />
@@ -866,6 +884,110 @@ export default function AutomationDetail() {
         </div>
       </div>
 
+      {automation.status === 'Draft' && automation.totalRuns === 0 ? (
+        <div className="draft-section">
+          <div className="draft-setup-card">
+            <div className="draft-icon">
+              <FileText size={48} />
+            </div>
+            <h2>Automation Setup</h2>
+            <p className="draft-description">
+              This automation is currently in draft mode. Complete the setup to start automating your purchase request workflow.
+            </p>
+            
+            <div className="setup-checklist">
+              <h3>Setup Checklist</h3>
+              <div className="checklist-item completed">
+                <CheckCircle2 size={18} />
+                <span>Basic information configured</span>
+              </div>
+              <div className="checklist-item completed">
+                <CheckCircle2 size={18} />
+                <span>Workflow steps defined</span>
+              </div>
+              <div className="checklist-item pending">
+                <Clock size={18} />
+                <span>Trigger conditions pending</span>
+              </div>
+              <div className="checklist-item pending">
+                <Clock size={18} />
+                <span>Test run required</span>
+              </div>
+            </div>
+
+            <div className="draft-info-grid">
+              <div className="draft-info-item">
+                <span className="draft-info-label">Target Application</span>
+                <span className="draft-info-value">Proflow Purchase Requisition</span>
+              </div>
+              <div className="draft-info-item">
+                <span className="draft-info-label">Workflow Type</span>
+                <span className="draft-info-value">Purchase Requisition</span>
+              </div>
+              <div className="draft-info-item">
+                <span className="draft-info-label">Expected Duration</span>
+                <span className="draft-info-value">~3-5 minutes</span>
+              </div>
+              <div className="draft-info-item">
+                <span className="draft-info-label">Estimated Steps</span>
+                <span className="draft-info-value">8-12 steps</span>
+              </div>
+            </div>
+
+            <div className="workflow-preview">
+              <h3>Workflow Preview</h3>
+              <div className="workflow-steps-preview">
+                <div className="preview-step">
+                  <div className="preview-step-number">1</div>
+                  <div className="preview-step-content">
+                    <span className="preview-step-title">Login to SAP Ariba</span>
+                    <span className="preview-step-desc">Authenticate with procurement system</span>
+                  </div>
+                </div>
+                <div className="preview-step">
+                  <div className="preview-step-number">2</div>
+                  <div className="preview-step-content">
+                    <span className="preview-step-title">Navigate to Requisitions</span>
+                    <span className="preview-step-desc">Open purchase requisition module</span>
+                  </div>
+                </div>
+                <div className="preview-step">
+                  <div className="preview-step-number">3</div>
+                  <div className="preview-step-content">
+                    <span className="preview-step-title">Create New Requisition</span>
+                    <span className="preview-step-desc">Fill in requisition details</span>
+                  </div>
+                </div>
+                <div className="preview-step">
+                  <div className="preview-step-number">4</div>
+                  <div className="preview-step-content">
+                    <span className="preview-step-title">Add Line Items</span>
+                    <span className="preview-step-desc">Add products/services to request</span>
+                  </div>
+                </div>
+                <div className="preview-step">
+                  <div className="preview-step-number">5</div>
+                  <div className="preview-step-content">
+                    <span className="preview-step-title">Submit for Approval</span>
+                    <span className="preview-step-desc">Route to appropriate approvers</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="draft-actions">
+              <button className="draft-btn secondary">
+                <Settings size={18} />
+                Edit Configuration
+              </button>
+              <button className="draft-btn primary">
+                <Play size={18} />
+                Run Test
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
       <div className="runs-section">
         <div className="section-header">
           <h2>Run History</h2>
@@ -1062,6 +1184,7 @@ export default function AutomationDetail() {
           </div>
         </div>
       </div>
+      )}
 
       {showLogModal && selectedRun && (
         <div className="log-modal-overlay" onClick={handleCloseLogModal}>

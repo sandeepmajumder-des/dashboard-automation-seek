@@ -329,12 +329,81 @@
 }
 
 .status-draft {
-  background: #f1f5f9;
-  color: #64748b;
+  background: #d1d5db !important;
+  color: #4b5563 !important;
 }
 
 .status-draft .status-dot {
-  background: #64748b;
+  background: #4b5563 !important;
+}
+
+/* Status Dropdown */
+.status-cell {
+  position: relative;
+}
+
+.status-dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.status-badge-btn {
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.status-badge-btn:hover {
+  filter: brightness(0.95);
+}
+
+.status-chevron {
+  margin-left: 4px;
+  opacity: 0.7;
+  transition: transform 0.2s;
+}
+
+.status-dropdown-wrapper:hover .status-chevron {
+  opacity: 1;
+}
+
+.status-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  min-width: 120px;
+  overflow: hidden;
+}
+
+.status-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: white;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: var(--text-primary);
+}
+
+.status-dropdown-item:hover {
+  background: var(--bg-light);
+}
+
+.status-dropdown-item .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-secondary);
 }
 
 .members-cell {

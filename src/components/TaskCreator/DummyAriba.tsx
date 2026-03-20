@@ -316,6 +316,24 @@ export default function DummyAriba({ onElementClick }: DummyAribaProps) {
                     </button>
                   </td>
                 </tr>
+                <tr 
+                  className="clickable-element"
+                  onClick={(e) => handleClick(e, 'Requisition REQ-2024-004', 'Table Row')}
+                >
+                  <td className="req-id">REQ-2024-004</td>
+                  <td>Proflow purchase request</td>
+                  <td>Sandeep M.</td>
+                  <td>$3,750.00</td>
+                  <td><span className="status-badge draft">Draft</span></td>
+                  <td>
+                    <button 
+                      className="action-btn clickable-element"
+                      onClick={(e) => handleClick(e, 'Edit REQ-2024-004', 'Action Button')}
+                    >
+                      Edit
+                    </button>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>

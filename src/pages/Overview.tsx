@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Search, 
@@ -8,7 +8,8 @@ import {
   ChevronRight,
   ChevronLeft,
   ArrowUpDown,
-  Eye
+  Eye,
+  ChevronDown
 } from 'lucide-react';
 import { useAccount } from '../context/AccountContext';
 import './Overview.css';
@@ -28,6 +29,18 @@ interface Automation {
 
 const automationsByAccount: Record<string, Automation[]> = {
   sandeep: [
+    {
+      id: '7',
+      name: 'Proflow purchase request',
+      description: 'Automates purchase request workflow for Proflow system',
+      status: 'Draft',
+      automationType: '--',
+      trigger: '--',
+      members: ['S'],
+      lastRun: '--',
+      totalRuns: 0,
+      successRate: 0,
+    },
     {
       id: '1',
       name: 'New Employee Onboarding',
@@ -216,8 +229,36 @@ export default function Overview() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [automationStatuses, setAutomationStatuses] = useState<Record<string, 'Active' | 'Paused' | 'Error' | 'Draft'>>({});
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const automations = automationsByAccount[currentAccount.id] || [];
+  const baseAutomations = automationsByAccount[currentAccount.id] || [];
+  
+  const automations = baseAutomations.map(a => ({
+    ...a,
+    status: automationStatuses[a.id] || a.status
+  }));
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleStatusChange = (automationId: string, newStatus: 'Active' | 'Paused' | 'Draft') => {
+    setAutomationStatuses(prev => ({ ...prev, [automationId]: newStatus }));
+    setOpenDropdown(null);
+  };
+
+  const getAvailableStatuses = (currentStatus: string): ('Active' | 'Paused' | 'Draft')[] => {
+    const allStatuses: ('Active' | 'Paused' | 'Draft')[] = ['Active', 'Paused', 'Draft'];
+    return allStatuses.filter(s => s !== currentStatus);
+  };
   const stats = statsByAccount[currentAccount.id] || { total: 0, active: 0, paused: 0, errors: 0 };
   
   const totalPages = Math.ceil(automations.length / 6) || 1;
@@ -368,11 +409,44 @@ export default function Overview() {
                     <span className="automation-desc">{automation.description}</span>
                   </div>
                 </td>
-                <td>
-                  <span className={`status-badge ${getStatusClass(automation.status)}`}>
-                    <span className="status-dot"></span>
-                    {automation.status}
-                  </span>
+                <td className="status-cell">
+                  {automation.status === 'Error' ? (
+                    <span className={`status-badge ${getStatusClass(automation.status)}`}>
+                      <span className="status-dot"></span>
+                      {automation.status}
+                    </span>
+                  ) : (
+                    <div className="status-dropdown-wrapper" ref={openDropdown === automation.id ? dropdownRef : null}>
+                      <button 
+                        className={`status-badge status-badge-btn ${getStatusClass(automation.status)}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenDropdown(openDropdown === automation.id ? null : automation.id);
+                        }}
+                      >
+                        <span className="status-dot"></span>
+                        {automation.status}
+                        <ChevronDown size={14} className="status-chevron" />
+                      </button>
+                      {openDropdown === automation.id && (
+                        <div className="status-dropdown-menu">
+                          {getAvailableStatuses(automation.status).map(status => (
+                            <button
+                              key={status}
+                              className={`status-dropdown-item ${getStatusClass(status)}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleStatusChange(automation.id, status);
+                              }}
+                            >
+                              <span className="status-dot"></span>
+                              {status}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </td>
                 <td>{automation.automationType}</td>
                 <td>{automation.trigger}</td>
